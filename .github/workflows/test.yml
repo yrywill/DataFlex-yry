@@ -1,0 +1,83 @@
+name: Python tests
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "**/*.py"
+      - "requirements.txt"
+      - "pyproject.toml"
+      - ".github/workflows/*.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "**/*.py"
+      - "requirements.txt"
+      - "pyproject.toml"
+      - ".github/workflows/*.yml"
+
+jobs:
+  test:
+    name: Run tests on ${{ matrix.os }} with Python ${{ matrix.python }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        python: ["3.10", "3.11", "3.12"]
+
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Free up disk space on Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          docker system prune -af || true
+          sudo apt-get clean
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        env:
+          UV_SYSTEM_PYTHON: "1"
+        run: |
+          uv pip install --no-cache -r requirements.txt
+          uv pip install -e ".[dev]"
+          uv pip install llamafactory
+
+      - name: Smoke test CLI
+        env:
+          PYTHONDONTWRITEBYTECODE: 1
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -m dataflex.cli version
+          dataflex-cli version
+          llamafactory-cli version
+
+      - name: Import check
+        run: |
+          python -c "from dataflex import __version__; print(__version__)"
+          python -c "from dataflex.core.registry import Registry"
+          python -c "from dataflex.train.selector import *"
+          python -c "from dataflex.train.mixer import *"
+          python -c "from dataflex.train.weighter import *"
+          python -c "from dataflex.train.dataset import MixedProportionManager"
+
+      # - name: Run pytest
+      #   env:
+      #     PYTHONDONTWRITEBYTECODE: 1
+      #   run: pytest

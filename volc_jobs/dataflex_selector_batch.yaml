@@ -1,0 +1,71 @@
+TaskName: "dataflex-cluster-method-batch-0503101734"
+Description: "DataFlex selector batch: random vs cluster_less vs less."
+Tags:
+  - "dataflex"
+  - "selector"
+  - "cluster_less"
+UserCodePath: "./"
+RemoteMountCodePath: "/root/code"
+Entrypoint: "bash /home/vepfs/MIXjyx/DataFlex-main/volc_jobs/run_selector_batch_entry.sh"
+Envs:
+  - Name: "DATAFLEX_BATCH_SELECTORS"
+    Value: "cluster_less_kmeans,cluster_less_spherical,cluster_less_farthest,cluster_less_lsh,cluster_less_random"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_SEEDS"
+    Value: "42,43,44"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_TRAIN_SIZE"
+    Value: "2048"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_EVAL_SIZE"
+    Value: "256"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_MAX_STEPS"
+    Value: "80"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_UPDATE_STEP"
+    Value: "20"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_WARMUP_STEP"
+    Value: "20"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_UPDATE_TIMES"
+    Value: "3"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_MODEL"
+    Value: "/home/vepfs/models/qwen/Qwen2___5-0___5B-Instruct"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_DATASET"
+    Value: "slimpajama"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_STAGE"
+    Value: ""
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_CUTOFF_LEN"
+    Value: "1024"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_SLIMPAJAMA_DIR"
+    Value: "/home/vepfs/data/SlimPajama-6B-jsonl"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_CLUSTERING_METHOD"
+    Value: "kmeans"
+    IsPrivate: false
+  - Name: "DATAFLEX_BATCH_LSH_BITS"
+    Value: ""
+    IsPrivate: false
+ImageUrl: "vemlp-cn-beijing.cr.volces.com/preset-images/pytorch:2.7.1-cu12.6.3-py3.10-ubuntu20.04"
+ResourceQueueID: "q-20260318205115-lvfng"
+Framework: "Custom"
+TaskRoleSpecs:
+  - RoleName: "worker"
+    RoleReplicas: 1
+    Flavor: "ml.pni2.3xlarge"
+ActiveDeadlineSeconds: "12h"
+DelayExitTimeSeconds: "10m"
+AccessType: "Queue"
+Storages:
+  - Type: "Vepfs"
+    MountPath: "/home/vepfs"
+    ReadOnly: false
+    VepfsId: "vepfs-cnbj2c98dea54433"
+    SubPath: "queue010/20252203250"

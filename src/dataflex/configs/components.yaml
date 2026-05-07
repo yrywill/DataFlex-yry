@@ -1,0 +1,343 @@
+selectors:
+  nice:
+    name: nice
+    params:
+      cache_dir: ../dataflex_saves/nice_output
+      gradient_type: adam
+      proj_dim: 4096
+      seed: 123
+      save_interval: 16
+      reward_model_backend: local_vllm
+      reward_backend_params:
+        local_vllm:
+          hf_model_name_or_path: meta-llama/Llama-3.1-8B
+          vllm_tensor_parallel_size: 1
+          vllm_temperature: 0.0
+          vllm_top_p: 0.9
+          vllm_max_tokens: 512
+          vllm_top_k: 40
+          vllm_seed: 42
+          vllm_max_model_len: null
+          vllm_gpu_memory_utilization: 0.9
+        api:
+          api_url: https://api.openai.com/v1/chat/completions
+          api_key: DF_API_KEY
+          model_name: gpt-4o
+          temperature: 0.0
+      mc_samples: 4
+      max_new_tokens: 512
+      generation_temperature: 0.7
+      max_prompt_length: 4096
+  less:
+    name: less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260507_000602/selector_cache/slimpajama/less/seed42
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 42
+      save_interval: 16
+  cluster_less:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260507_000602/selector_cache/slimpajama/cluster_less/seed42
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 42
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 4
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+      representative_strategy: random
+  cluster_less_smoke:
+    name: cluster_less
+    params:
+      cache_dir: ../dataflex_saves/cluster_less_smoke_output
+      gradient_type: adam
+      proj_dim: 64
+      seed: 123
+      save_interval: 2
+      cluster_size: 4
+      samples_per_cluster: 2
+      clustering_batch_size: 2
+      clustering_max_iter: 3
+  loss:
+    name: loss
+    params:
+      cache_dir: ../dataflex_saves/loss_output
+      focus: medium
+  delta_loss:
+    name: delta_loss
+    params:
+      cache_dir: ../dataflex_saves/delta_loss_output
+      window_size: 0.2
+  tsds:
+    name: tsds
+    params:
+      probs_path: ./src/dataflex/offline_selector/tsds_probs.npy
+      cache_dir: ../dataflex_saves/tsds_output
+  near:
+    name: near
+    params:
+      indices_path: ./src/dataflex/offline_selector/top_indices.npy
+      cache_dir: ../dataflex_saves/near_output
+  random:
+    name: random
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/selector_batch_20260503_080821/selector_cache/random/seed44
+      seed: 44
+      replacement: false
+  custom:
+    name: custom
+    params:
+      cache_dir: ../dataflex_saves/custom_output
+  cluster_less_kmeans:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/selector_batch_20260503_102000/selector_cache/cluster_less_kmeans/seed44
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 44
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 3
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+      lsh_num_bits: null
+  cluster_less_spherical:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/selector_batch_20260503_102000/selector_cache/cluster_less_spherical/seed44
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 44
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 3
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: spherical_kmeans
+      lsh_num_bits: null
+  cluster_less_farthest:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/selector_batch_20260503_102000/selector_cache/cluster_less_farthest/seed44
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 44
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 3
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: farthest_first
+      lsh_num_bits: null
+  cluster_less_lsh:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/selector_batch_20260503_102000/selector_cache/cluster_less_lsh/seed44
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 44
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 3
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: random_projection_lsh
+      lsh_num_bits: null
+  cluster_less_random:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/selector_batch_20260503_102000/selector_cache/cluster_less_random/seed44
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 44
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 3
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: random_partition
+      lsh_num_bits: null
+  cluster_less_spc1:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260504_141252/selector_cache/fineweb_edu/cluster_less_spc1/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 1
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+  cluster_less_spc2:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260504_141252/selector_cache/fineweb_edu/cluster_less_spc2/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 2
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+  cluster_less_spc3:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260504_141252/selector_cache/fineweb_edu/cluster_less_spc3/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 3
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+  cluster_less_spc4:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260504_141252/selector_cache/fineweb_edu/cluster_less_spc4/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 4
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+  cluster_less_spc6:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260504_141252/selector_cache/fineweb_edu/cluster_less_spc6/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 6
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+  cluster_less_spc8:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260504_141252/selector_cache/fineweb_edu/cluster_less_spc8/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 8
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+  cluster_less_rep_random:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260506_190502/selector_cache/fineweb_edu/cluster_less_rep_random/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 4
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+      representative_strategy: random
+  cluster_less_rep_nearest:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260506_190502/selector_cache/fineweb_edu/cluster_less_rep_nearest/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 4
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+      representative_strategy: nearest
+  cluster_less_rep_farthest:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260506_190502/selector_cache/fineweb_edu/cluster_less_rep_farthest/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 4
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+      representative_strategy: farthest
+  cluster_less_rep_mixed:
+    name: cluster_less
+    params:
+      cache_dir: /home/vepfs/MIXjyx/dataflex_volc_runs/multidata_bench_20260506_190502/selector_cache/fineweb_edu/cluster_less_rep_mixed/seed43
+      gradient_type: adam
+      proj_dim: 1024
+      seed: 43
+      save_interval: 16
+      cluster_size: 64
+      samples_per_cluster: 4
+      clustering_batch_size: 8
+      clustering_max_iter: 10
+      clustering_method: kmeans
+      representative_strategy: mixed
+mixers:
+  random:
+    name: random
+    params:
+      seed: 42
+  doremi:
+    name: doremi
+    params:
+      reference_model_path: /path/to/dataflex_saves/Qwen2.5-0.5B/doremi_step1_static_qwen_pt_full_result/checkpoint-xxx
+      reweight_eta: 0.1
+      reweight_eps: 0.01
+  static:
+    name: static
+    params:
+      proportions:
+      - 0.5
+      - 0.5
+  odm:
+    name: odm
+    params:
+      alpha: 0.9
+      warmup_steps: 2000
+      reward_scale: 15.0
+      min_exploration_rate: 0.03
+      initial_proportions:
+      - 0.5
+      - 0.5
+  dynamic_moe:
+    name: dynamic_moe
+    params:
+      eta: 10.0
+      c: 0.05
+      collect_steps: 5
+      eval_samples: 1000
+      eval_batch_size: 32
+weighters:
+  loss:
+    name: loss
+    params:
+      strategy: linupper
+      delta: 1.0
+  custom:
+    name: custom
+    params:
+      strategy: uniform

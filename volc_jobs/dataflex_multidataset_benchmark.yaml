@@ -1,0 +1,93 @@
+TaskName: "dataflex-scale-slimpajama-16384-0506162950"
+Description: "DataFlex multidataset benchmark: LESS vs ClusterLess(kmeans), metrics, speed, cache, plots."
+Tags:
+  - "dataflex"
+  - "selector"
+  - "cluster_less"
+  - "benchmark"
+UserCodePath: "./"
+RemoteMountCodePath: "/root/code"
+Entrypoint: "bash /home/vepfs/MIXjyx/DataFlex-main/volc_jobs/run_multidataset_benchmark_entry.sh"
+Envs:
+  - Name: "DATAFLEX_BENCH_DATASETS"
+    Value: "slimpajama"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_SELECTORS"
+    Value: "less,cluster_less"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_SEEDS"
+    Value: "42"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_TRAIN_SIZE"
+    Value: "16384"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_EVAL_SIZE"
+    Value: "2048"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_MAX_STEPS"
+    Value: "80"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_WARMUP_STEP"
+    Value: "20"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_UPDATE_STEP"
+    Value: "20"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_UPDATE_TIMES"
+    Value: "3"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_MODEL"
+    Value: "/home/vepfs/models/qwen/Qwen2___5-0___5B-Instruct"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_CUTOFF_LEN"
+    Value: "1024"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_PROJ_DIM"
+    Value: "1024"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_CLUSTER_SIZE"
+    Value: "64"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_SAMPLES_PER_CLUSTER"
+    Value: "4"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_SAMPLES_PER_CLUSTER_VALUES"
+    Value: ""
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_REPRESENTATIVE_STRATEGY"
+    Value: "random"
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_REPRESENTATIVE_STRATEGY_VALUES"
+    Value: ""
+    IsPrivate: false
+  - Name: "DATAFLEX_BENCH_GRAD_ACCUM"
+    Value: "4"
+    IsPrivate: false
+  - Name: "FORCE_TORCHRUN"
+    Value: "1"
+    IsPrivate: false
+  - Name: "NPROC_PER_NODE"
+    Value: "8"
+    IsPrivate: false
+  - Name: "NNODES"
+    Value: "1"
+    IsPrivate: false
+  - Name: "NODE_RANK"
+    Value: "0"
+    IsPrivate: false
+ImageUrl: "vemlp-cn-beijing.cr.volces.com/preset-images/pytorch:2.7.1-cu12.6.3-py3.10-ubuntu20.04"
+ResourceQueueID: "q-20260318205115-lvfng"
+Framework: "Custom"
+TaskRoleSpecs:
+  - RoleName: "worker"
+    RoleReplicas: 1
+    Flavor: "ml.pni2.28xlarge"
+ActiveDeadlineSeconds: "36h"
+DelayExitTimeSeconds: "10m"
+AccessType: "Queue"
+Storages:
+  - Type: "Vepfs"
+    MountPath: "/home/vepfs"
+    ReadOnly: false
+    VepfsId: "vepfs-cnbj2c98dea54433"
+    SubPath: "queue010/20252203250"
