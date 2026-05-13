@@ -1,0 +1,51 @@
+### model
+model_name_or_path: meta-llama/Llama-3.1-8B
+trust_remote_code: true
+
+### method
+stage: pt
+do_train: true
+finetuning_type: lora
+lora_target: all
+lora_rank: 16
+lora_alpha: 8
+
+### dataset
+dataset: wiki_demo,c4_demo
+template: llama3
+cutoff_len: 2048
+overwrite_cache: true
+preprocessing_num_workers: 16
+dataloader_num_workers: 0
+seed: 42
+
+### output
+output_dir: ../dataflex_saves/Llama-3.1-8B/loss_pt
+logging_steps: 10
+save_steps: 100
+plot_loss: true
+save_only_model: false
+overwrite_output_dir: true
+
+### swanlab
+report_to: none  # choices: [none, wandb, tensorboard, swanlab, mlflow]
+
+### train
+per_device_train_batch_size: 2
+gradient_accumulation_steps: 1
+learning_rate: 1.0e-4
+num_train_epochs: 1.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+ddp_timeout: 180000000
+
+### Dataflex args
+train_type: dynamic_select
+components_cfg_file: src/dataflex/configs/components.yaml
+component_name: loss
+warmup_step: 10
+update_step: 10
+update_times: 2  # Updates per Flex epoch; repeats by num_train_epochs
+
+# FORCE_TORCHRUN=1 DISABLE_VERSION_CHECK=1 dataflex-cli train examples/train_lora/selectors/loss_pt.yaml
