@@ -62,6 +62,25 @@ selectors:
       samples_per_cluster: 2
       clustering_batch_size: 2
       clustering_max_iter: 3
+  cluster_pmp:
+    name: cluster_pmp
+    params:
+      cache_dir: ../dataflex_saves/cluster_pmp_output
+      embedding_model_name_or_path: Qwen/Qwen2.5-0.5B
+      embedding_model_dtype: auto
+      cluster_size: 64
+      clustering_batch_size: 8
+      clustering_max_iter: 20
+      clustering_method: kmeans
+      sketch_dim: 8192
+      pmp_lr: 0.1
+      temperature: 0.5
+      min_weight: 0.01
+      n_samples_per_cluster: 4
+      accumulate_grad_gamma: true
+      drop_bad_clusters: false
+      drop_patience: 5
+      seed: 42
   loss:
     name: loss
     params:

@@ -232,9 +232,9 @@ else:
 
 
 class SelectTrainer(CustomSeq2SeqTrainer):
-    def __init__(self, finetuning_args, processor=None, gen_kwargs=None, **kwargs):
+    def __init__(self, finetuning_args, processor=None, model_args=None, gen_kwargs=None, **kwargs):
         # 初始化父类
-        super().__init__(finetuning_args=finetuning_args, processor=processor, gen_kwargs=gen_kwargs, **kwargs)
+        super().__init__(finetuning_args=finetuning_args, processor=processor, model_args=model_args, gen_kwargs=gen_kwargs, **kwargs)
         name = finetuning_args.component_name
         # 取该 selector 的 params（可替换 ${output_dir}）
         sel_params = load_component(
