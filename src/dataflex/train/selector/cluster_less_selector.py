@@ -159,10 +159,7 @@ class ClusterLessSelector(LessSelector):
         feature_path = self._embedding_cache_path()
 
         cached = os.path.exists(feature_path) if self.accelerator.is_main_process else False
-        if dist.is_available() and dist.is_initialized():
-            obj = [cached]
-            dist.broadcast_object_list(obj, src=0)
-            cached = obj[0]
+        cached = self._broadcast_bool(cached)
         if cached:
             if self.accelerator.is_main_process:
                 logger.info(f"[ClusterLessSelector] Loading cached train embeddings from {feature_path}")
@@ -407,6 +404,19 @@ class ClusterLessSelector(LessSelector):
             return self._run_random_partition(features)
         raise ValueError(f"Unknown clustering_method: {self.clustering_method}")
 
+    def _broadcast_bool(self, value: bool) -> bool:
+        """Broadcast a boolean flag from rank 0 to all ranks.
+
+        Any cache-existence check that gates a *collective* code path must be
+        decided by rank 0 alone and broadcast, otherwise ranks can diverge
+        (e.g. a stale/laggy shared FS) and deadlock on mismatched collectives.
+        """
+        if not (dist.is_available() and dist.is_initialized()):
+            return value
+        obj = [value if self.accelerator.is_main_process else None]
+        dist.broadcast_object_list(obj, src=0)
+        return bool(obj[0])
+
     def _broadcast_long_tensor(self, tensor: Optional[torch.Tensor]) -> torch.Tensor:
         """Broadcast a 1-D long tensor from rank 0 efficiently.
 
@@ -443,10 +453,7 @@ class ClusterLessSelector(LessSelector):
         timing = {"embedding_time_sec": 0.0, "clustering_time_sec": 0.0, "cluster_cache_hit": False}
 
         clusters_cached = os.path.exists(cluster_path) if self.accelerator.is_main_process else False
-        if dist.is_available() and dist.is_initialized():
-            obj = [clusters_cached]
-            dist.broadcast_object_list(obj, src=0)
-            clusters_cached = obj[0]
+        clusters_cached = self._broadcast_bool(clusters_cached)
         timing["cluster_cache_hit"] = clusters_cached
 
         # Only extract embeddings if we actually need to (re)build clusters.
@@ -537,7 +544,11 @@ class ClusterLessSelector(LessSelector):
     def select(self, model, step_id: int, num_samples: int, **kwargs) -> List[int]:
         os.makedirs(self.cache_dir, exist_ok=True)
         save_path = os.path.join(self.cache_dir, f"step_{step_id}.json")
-        if os.path.exists(save_path):
+        # Decide cache hits on rank 0 only, then broadcast: every branch below
+        # runs collectives, so all ranks must agree to avoid deadlock.
+        selection_cached = os.path.exists(save_path) if self.accelerator.is_main_process else False
+        selection_cached = self._broadcast_bool(selection_cached)
+        if selection_cached:
             if self.accelerator.is_main_process:
                 cached_indices, _ = load_cached_selection(save_path)
             else:
@@ -573,7 +584,10 @@ class ClusterLessSelector(LessSelector):
         rep_grads_path = os.path.join(now_train_save_dir, "all_projected_grads.pt")
         eval_grads_path = os.path.join(now_eval_save_dir, "all_projected_grads.pt")
 
-        if not os.path.exists(rep_grads_path):
+        # Gate the collective gradient computation on a rank-0 decision.
+        rep_grads_cached = os.path.exists(rep_grads_path) if self.accelerator.is_main_process else False
+        rep_grads_cached = self._broadcast_bool(rep_grads_cached)
+        if not rep_grads_cached:
             os.makedirs(now_train_save_dir, exist_ok=True)
             optimizer_state = kwargs.get("optimizer_state", None)
             started = time.perf_counter()
@@ -591,7 +605,9 @@ class ClusterLessSelector(LessSelector):
 
         self.accelerator.wait_for_everyone()
 
-        if not os.path.exists(eval_grads_path):
+        eval_grads_cached = os.path.exists(eval_grads_path) if self.accelerator.is_main_process else False
+        eval_grads_cached = self._broadcast_bool(eval_grads_cached)
+        if not eval_grads_cached:
             os.makedirs(now_eval_save_dir, exist_ok=True)
             started = time.perf_counter()
             self._collect_and_save_projected_gradients(model, now_eval_save_dir, self.eval_dataset, "sgd", None)
